@@ -3,6 +3,7 @@ package com.sdxh.util;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPrintable;
 import org.apache.pdfbox.printing.Scaling;
+import org.springframework.stereotype.Component;
 
 import javax.print.PrintService;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -15,11 +16,13 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * 废弃
+ * Pdf打印机
  */
-@Deprecated
-public class Print {
-    public static void PDFprint(File file) throws Exception {
+@Component
+public class PdfPrinter implements  Printer{
+
+    @Override
+    public void printByFile(File file, Paper paper) throws Exception{
         PDDocument document = null;
         try {
             document = PDDocument.load(file);
@@ -27,8 +30,7 @@ public class Print {
             printJob.setJobName(file.getName());
             PrintService[] printServices = PrinterJob.lookupPrintServices();
             if(printServices == null || printServices.length == 0) {
-                System.out.print("打印失败，未找到可用打印机，请检查。");
-                return ;
+                throw new RuntimeException("打印失败，未找到可用打印机，请检查。");
             }
             PrintService printService = printServices[0];
             //设置纸张及缩放
@@ -38,7 +40,7 @@ public class Print {
             PageFormat pageFormat = new PageFormat();
             //设置打印方向
             pageFormat.setOrientation(PageFormat.PORTRAIT);//纵向
-            pageFormat.setPaper(getPaper());//设置纸张
+            pageFormat.setPaper(paper);//设置纸张
             book.append(pdfPrintable, pageFormat, document.getNumberOfPages());
             printJob.setPageable(book);
             printJob.setCopies(1);//设置打印份数
@@ -57,7 +59,8 @@ public class Print {
         }
     }
 
-    public static void PDFprintByBase64(byte[] bytes) throws Exception {
+    @Override
+    public void printByByteArray(byte[] bytes, Paper paper) throws Exception{
         PDDocument document = null;
         try {
             document = PDDocument.load(bytes);
@@ -76,7 +79,7 @@ public class Print {
             PageFormat pageFormat = new PageFormat();
             //设置打印方向
             pageFormat.setOrientation(PageFormat.PORTRAIT);//纵向
-            pageFormat.setPaper(getPaper());//设置纸张
+            pageFormat.setPaper(paper);//设置纸张
             book.append(pdfPrintable, pageFormat, document.getNumberOfPages());
             printJob.setPageable(book);
             printJob.setCopies(1);//设置打印份数
@@ -93,22 +96,13 @@ public class Print {
                 }
             }
         }
+
     }
 
-
-    public static Paper getPaper() {
-        Paper paper = new Paper();
-        // 默认为A4纸张，对应像素宽和高分别为 595, 842
-        int width = 595;
-        int height = 421;
-        // 设置边距，单位是像素，10mm边距，对应 28px
-        int marginLeft = 0;
-        int marginRight = 5;
-        int marginTop = 5;
-        int marginBottom = 0;
-        paper.setSize(width, height);
-        // 下面一行代码，解决了打印内容为空的问题
-        paper.setImageableArea(marginLeft, marginRight, width - (marginLeft + marginRight), height - (marginTop + marginBottom));
-        return paper;
+    @Override
+    public void printByFilePath(String filePath, Paper paper) throws Exception {
+        File file = new File(filePath);
+        this.printByFile(file,paper);
     }
+
 }
