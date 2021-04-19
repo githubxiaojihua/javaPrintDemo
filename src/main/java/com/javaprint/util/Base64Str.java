@@ -1,4 +1,4 @@
-package com.sdxh.util;
+package com.javaprint.util;
 
 public class Base64Str {
     private String base64Str;

@@ -1,4 +1,4 @@
-package com.sdxh.util;
+package com.javaprint.util.paper;
 
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.sdxh.util;
+package com.javaprint.util.printer;
 
 /**
  * 打印机工厂类

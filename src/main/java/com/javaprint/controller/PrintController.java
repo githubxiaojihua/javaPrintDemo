@@ -1,11 +1,15 @@
-package com.sdxh.controller;
+package com.javaprint.controller;
 
-import com.sdxh.util.*;
+import com.javaprint.util.*;
+import com.javaprint.util.paper.PaperFactory;
+import com.javaprint.util.printer.Printer;
+import com.javaprint.util.printer.PrinterFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import sun.misc.BASE64Decoder;
 import java.io.File;
+import java.io.IOException;
 
 @RequestMapping("/printBill")
 @RestController
@@ -16,6 +20,10 @@ public class PrintController {
     PrinterFactory printerFactory;
 
     @Autowired
+    @Qualifier("newPdfPrinterFactory")
+    PrinterFactory newPrinterFactory;
+
+    @Autowired
     @Qualifier("a4HalfPaperFactory")
     PaperFactory paperFactory;
 
@@ -23,6 +31,11 @@ public class PrintController {
     @Qualifier("a4FullPaperFactory")
     PaperFactory a4FullPaperFactory;
 
+    @Autowired
+    @Qualifier("imagePrinter")
+    Printer imagePrinter;
+
+    //======================pdf打印===============
     /**
      * PDF打印---按文件名打印  A4
      * @param filePath
@@ -68,6 +81,22 @@ public class PrintController {
         }
     }
 
+
+    @PostMapping("/newpdf-base64")
+    public Result newPrintPdfBybase64(@RequestBody Base64Str base64Str) {
+        Result result = new Result();
+        BASE64Decoder decoder = new BASE64Decoder();
+        byte[] bytes = new byte[0];
+        try {
+            bytes = decoder.decodeBuffer(base64Str.getBase64Str());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        result = newPrinterFactory.getPrinter().printByByteArray(bytes,paperFactory.getPaper());
+        return result;
+
+    }
+
     /**
      * PDF打印---按文件名打印  A4
      * @param filePath
@@ -88,5 +117,27 @@ public class PrintController {
             result.setMessage("打印失败：" + e.getMessage());
             return result;
         }
+    }
+
+    //========================image打印==============================
+
+    /**
+     * Image打印---按文件名打印  A4
+     * @param
+     * @return
+     */
+    @PostMapping("/image-base64")
+    public Result newPrintImageBybase64(@RequestBody Base64Str base64Str) {
+        Result result = new Result();
+        BASE64Decoder decoder = new BASE64Decoder();
+        byte[] bytes = new byte[0];
+        try {
+            bytes = decoder.decodeBuffer(base64Str.getBase64Str());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        result = imagePrinter.printByByteArray(bytes,paperFactory.getPaper());
+        return result;
+
     }
 }

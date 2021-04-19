@@ -20,7 +20,7 @@ org.springframework.boot.context.properties.bind.BindException: Failed to bind p
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1237)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226)
-	at com.sdxh.Application.main(Application.java:10)
+	at com.javaprint.Application.main(Application.java:10)
 Caused by: org.springframework.core.convert.ConverterNotFoundException: No converter found capable of converting from type [java.lang.String] to type [java.util.Map<java.lang.String, org.springframework.boot.logging.LogLevel>]
 	at org.springframework.core.convert.support.GenericConversionService.handleConverterNotFound(GenericConversionService.java:321)
 	at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:194)

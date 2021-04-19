@@ -1,4 +1,4 @@
-package com.sdxh;
+package com.javaprint;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
